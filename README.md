@@ -7,3 +7,18 @@ Without Redis `~300ms`
 With Redis `~40ms`
 
 ![Screen Shot 2022-08-05 at 06 03 35](https://user-images.githubusercontent.com/58401630/182999175-02fa8770-40cd-4737-8682-fa6e4e3d0582.png)
+
+## Scripts
+
+```shell
+# Run example without Redis
+npm start
+
+# Run example with Redis
+npm run start:redis
+```
+
+## Resources
+
+- [Redis](https://redis.io/)
+- [Node Redis](https://github.com/redis/node-redis)

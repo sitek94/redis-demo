@@ -4,6 +4,7 @@ import axios from 'axios'
 import { createClient } from 'redis'
 
 const redis = createClient()
+const expireTime = 10 // seconds
 
 redis.on('error', err => console.log('Redis Client Error', err))
 
@@ -31,7 +32,9 @@ app.get('/photos', async (req, res) => {
   const { data } = await api.get('/photos', { params: { albumId } })
 
   // Save the data in the cache
-  await redis.set(key, JSON.stringify(data))
+  await redis.set(key, JSON.stringify(data), {
+    EX: expireTime,
+  })
   console.log(`Saving to cache: ${key}`)
 
   res.json(data)
@@ -55,10 +58,19 @@ app.get('/photos/:id', async (req, res) => {
   const { data } = await api.get(`/photos/${id}`)
 
   // Save the data in the cache
-  await redis.set(key, JSON.stringify(data))
+  await redis.set(key, JSON.stringify(data), {
+    EX: expireTime,
+  })
   console.log(`Saving to cache: ${key}`)
 
   res.json(data)
+})
+
+// 🚨 Just for testing, don't do it in production
+app.get('/flush', async (req, res) => {
+  await redis.flushAll()
+  console.log('Cache flushed')
+  res.json({ success: true })
 })
 
 app.listen(3000, () => {
